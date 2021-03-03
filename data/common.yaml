@@ -1,1 +1,134 @@
---- {}
+---
+profile_audit::qualys::enabled: false
+profile_audit::qualys::gid: "19999"
+profile_audit::qualys::group: "qualys"
+profile_audit::qualys::homedir: "/home/qualys"
+profile_audit::qualys::ip: "141.142.148.51"
+profile_audit::qualys::ssh_authorized_key: null
+profile_audit::qualys::ssh_authorized_key_type: "rsa"
+profile_audit::qualys::uid: "19999"
+profile_audit::qualys::user: "qualys"
+profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.edu"
+
+profile_audit::root_equivalence::crons:
+  "root equivalence reporting":
+    command: "/root/scripts/k5login_otp_audit.pl -clear > /dev/null 2>&1"
+    environment:
+      - "SHELL=/bin/sh"
+    hour: 1
+    minute: 1
+    monthday: 1
+    user: "root"
+profile_audit::root_equivalence::files:
+  "/root/scripts":
+    ensure: "directory"
+    mode: "0750"
+    owner: "root"
+    group: "root"
+  "/root/scripts/k5login_otp_audit.pl":
+    ensure: "present"
+    mode: "0750"
+    owner: "root"
+    group: "root"
+    content: |
+      #!/usr/bin/perl
+      #
+      # Script to send .k5login and .otplogins files to security for auditing.
+      #
+      # Written by Tim Brooks 04/13/2005
+      # Updated by Tim Brooks 09/13/2005
+      # Updated by Tim Brooks 10/20/2005
+      use Sys::Hostname;
+      chomp($option = $ARGV[0]);
+      if ($option eq "-h" || $option eq "--help") { #Go to Usage subroutine for help with option of -h or --help.
+         &Usage;
+      } else {
+         # Get the localhost name
+         $hostname = hostname();
+         $mailto = "security-alerts\@ncsa.illinois.edu";
+         $mail_from = "k5login_audit";
+         $mail_from_2 = "otp_audit";
+         $mail_subj = ".k5login audit for $hostname";
+         $mail_subj_2 = ".otplogins audit for $hostname";
+         $passwd = "/etc/passwd";
+         # Get root's home directory
+         open(PASSWD,$passwd);
+         while (<PASSWD>){
+            chomp;
+            ($login, $passwd, $uid, $gid, $gcos, $home, $shell) = split /:/;
+            if ($uid == 0){
+               $roothome = $home;
+            }
+            close (PASSWD);
+         }
+         $k5 = "$roothome/.k5login";
+         $otp = "$roothome/.otplogins";
+         if ($option eq "-clear"){# Set the file to be sent in clear text
+            $gpg_k5 = $k5;
+            $gpg_otp = $otp;
+         } elsif ($option eq "-encrypt"){# Encrypt the file to be sent with gpg
+            &gpgencrypt;
+         } else {
+         &gpgencrypt;
+         }
+         # Get the .k5login file to send.
+         if (-e $k5){
+            open (K5LOGIN,$gpg_k5);
+            open (MAIL, "| /usr/lib/sendmail -t -f $mail_from") || die "Cannot find /usr/lib/sendmail: $!\n";
+            print MAIL "To: $mailto\n";
+            print MAIL "Subject: $mail_subj\n\n";
+            @k5login = <K5LOGIN>;
+            foreach $line (@k5login){
+               print MAIL "$line";
+            }
+            close(K5LOGIN);
+            print MAIL "\n\n\n";
+            if (! -e $otp){# If there isn't a .otplogins file, let us know.
+               print MAIL "The file $otp does not exist.  OTP root elevation is not in use on $hostname. \n\n";
+            }
+            print MAIL "This output is from the $0 script running on $hostname\n";
+            close(MAIL);
+            if ($option ne "-clear"){# Remove the gpg encrypted file.
+               `rm $gpg_k5`;
+            }
+         }
+        if (-e $otp){# Mail the .otplogins file.
+            open (OTPLOGIN,$gpg_otp);
+            open (MAIL, "| /usr/lib/sendmail -t -f $mail_from_2") || die "Cannot find /usr/lib/sendmail: $!\n";
+            print MAIL "To: $mailto\n";
+            print MAIL "Subject: $mail_subj_2\n\n";
+            @otplogin = <OTPLOGIN>;
+            foreach $line (@otplogin){
+               print MAIL "$line";
+            }
+            close(OTPLOGIN);
+            print MAIL "\n\n\n";
+            if (! -e $k5){# If there isn't a .k5login file, let us know.
+               print MAIL "The file $k5 does not exist.  ksu root elevation is not in use on $hostname. \n\n";
+            }
+            print MAIL "This output is from the $0 script running on $hostname\n";
+            close(MAIL);
+            if ($option ne "-clear"){# Remove the gpg encrypted file.
+               `rm $gpg_otp`;
+            }
+         }
+      }
+      sub Usage {# Print the usage.
+          print "Usage:\n";
+          print "   k5login_otp_audit.pl -[clear]\n";
+          print "       -h          print this usage information\n";
+          print "       -clear      Send .k5login or .otplogins file in clear text\n";
+          print "       -encrypt    Send .k5login or .otplogins file encrypted with gpg (default)\n";
+          print "\n";
+          exit;
+      }
+      sub gpgencrypt {# Encrypt with security pgp key.
+         if (-e $k5){
+            `gpg --always-trust -e -a -r security\@ncsa.uiuc.edu $k5`;
+         }
+         if (-e $otp){
+            `gpg --always-trust -e -a -r security\@ncsa.uiuc.edu $otp`;
+         }
+         $gpg_k5 = "$k5.asc";
+         $gpg_otp = "$otp.asc";
+      }

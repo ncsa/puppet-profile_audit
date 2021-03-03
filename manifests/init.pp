@@ -8,5 +8,6 @@ class profile_audit {
 
   include ::profile_audit::qualys
   include ::profile_audit::root_equivalence
+  #include ::profile_audit::vetting
 
 }

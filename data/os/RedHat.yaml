@@ -1,0 +1,3 @@
+---
+profile_audit::root_equivalence::packages:
+  - "perl"
