@@ -149,6 +149,8 @@ class profile_audit::qualys (
       'Banner'                => 'none',
       'MaxSessions'           => '10',
       'X11Forwarding'         => 'no',
+      'DisableForwarding'     => 'yes',
+      'MaxAuthTries'          => '6',
     }
 
     sshd_config_match {
