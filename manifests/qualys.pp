@@ -147,6 +147,7 @@ class profile_audit::qualys (
       'PubkeyAuthentication'  => 'yes',
       'AuthenticationMethods' => 'publickey',
       'Banner'                => 'none',
+      'MaxAuthTries'          => '6',
       'MaxSessions'           => '10',
       'X11Forwarding'         => 'no',
     }
