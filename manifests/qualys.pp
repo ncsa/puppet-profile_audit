@@ -23,6 +23,9 @@
 # @param ssh_authorized_key_type
 #   String of the key type used for the qualys user's authentication
 #
+# @param sshd_custom_cfg
+#   Hash of additional sshd match parameters for matchblock for qualys access
+#
 # @param uid
 #   String of the UID of the local qualys user
 #
@@ -43,6 +46,7 @@ class profile_audit::qualys (
   String             $ip,
   Optional[ String ] $ssh_authorized_key,
   String             $ssh_authorized_key_type,
+  Hash               $sshd_custom_cfg,
   String             $uid,
   String             $user,
   String             $user_comment,
@@ -106,69 +110,17 @@ class profile_audit::qualys (
       type => $ssh_authorized_key_type,
     }
 
-    ### ACCESS.CONF
-    pam_access::entry { "Allow ${user} ssh from ${ip}":
-      user       => $user,
-      origin     => $ip,
-      permission => '+',
-      position   => '-1',
+    ::sshd::allow_from{ 'sshd allow qualys from qualys appliance':
+      hostlist                => [ $ip ],
+      users                   => [ $user ],
+      groups                  => [ $group ],
+      additional_match_params => $sshd_custom_cfg,
     }
 
-    ### IPTABLES
-    firewall {
-      "222 allow TCP connections from ${user}" :
-        proto    => 'tcp',
-      ;
-      default:
-        source   => $ip,
-        dport    => '22',
-        action   => 'accept',
-        provider => 'iptables',
-      ;
-    }
-
-#    ### TCP WRAPPERS
-#    tcpwrappers::allow { "tcpwrappers allow SSH from host '${ip}' for qualys scan":
-#      service => 'sshd',
-#      address => $ip,
-#    }
-
-    ### SSHD_CONFIG
-    # Defaults
-    $config_defaults = { 'notify' => Service[ sshd ],
-    }
-    $config_match_defaults = $config_defaults + { 'position' => 'before first match' }
-
+    # CLEAN UP OLD VERSION OF SSHD MATCH FOR QUALYS
     $match_condition = "User ${user}"
-
-    $match_params = {
-      'AllowGroups'           => [ $group ],
-      'AllowUsers'            => [ "${user}@${ip}" ],
-      'PubkeyAuthentication'  => 'yes',
-      'AuthenticationMethods' => 'publickey',
-      'Banner'                => 'none',
-      'MaxAuthTries'          => '6',
-      'MaxSessions'           => '10',
-      'X11Forwarding'         => 'no',
-    }
-
-    sshd_config_match {
-      $match_condition :
-      ;
-      default: * => $config_match_defaults,
-      ;
-    }
-
-    $match_params.each | $key, $val | {
-      sshd_config {
-        "${match_condition} ${key}" :
-          key       => $key,
-          value     => $val,
-          condition => $match_condition,
-        ;
-        default: * => $config_defaults,
-        ;
-      }
+    sshd_config_match { $match_condition :
+      ensure => absent,
     }
 
   }

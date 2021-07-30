@@ -48,6 +48,7 @@ The following parameters are available in the `profile_audit::qualys` class:
 * [`ip`](#ip)
 * [`ssh_authorized_key`](#ssh_authorized_key)
 * [`ssh_authorized_key_type`](#ssh_authorized_key_type)
+* [`sshd_custom_cfg`](#sshd_custom_cfg)
 * [`uid`](#uid)
 * [`user`](#user)
 * [`user_comment`](#user_comment)
@@ -93,6 +94,12 @@ String of the public ssh authorized key that the qualys user uses for authentica
 Data type: `String`
 
 String of the key type used for the qualys user's authentication
+
+##### <a name="sshd_custom_cfg"></a>`sshd_custom_cfg`
+
+Data type: `Hash`
+
+Hash of additional sshd match parameters for matchblock for qualys access
 
 ##### <a name="uid"></a>`uid`
 

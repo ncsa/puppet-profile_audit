@@ -6,6 +6,13 @@ profile_audit::qualys::homedir: "/home/qualys"
 profile_audit::qualys::ip: "141.142.148.51"
 profile_audit::qualys::ssh_authorized_key: null
 profile_audit::qualys::ssh_authorized_key_type: "rsa"
+profile_audit::qualys::sshd_custom_cfg:
+  PubkeyAuthentication: "yes"
+  AuthenticationMethods: "publickey"
+  Banner: "none"
+  MaxAuthTries: "6"
+  MaxSessions: "10"
+  X11Forwarding: "no"
 profile_audit::qualys::uid: "19999"
 profile_audit::qualys::user: "qualys"
 profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.edu"
