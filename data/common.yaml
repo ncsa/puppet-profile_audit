@@ -19,12 +19,14 @@ profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.
 
 profile_audit::root_equivalence::crons:
   "root equivalence reporting":
-    command: "/root/scripts/k5login_otp_audit.pl > /dev/null 2>&1"
+    command: "/root/scripts/k5login_otp_audit.pl"
     environment:
       - "SHELL=/bin/sh"
     hour: 1
-    minute: 1
-    monthday: 1
+    minute: 0
+    month: "*"
+    monthday: "*"
+    weekday: 6
     user: "root"
 profile_audit::root_equivalence::files:
   "/root/scripts":
@@ -46,43 +48,21 @@ profile_audit::root_equivalence::files:
       # Updated by Tim Brooks 09/13/2005
       # Updated by Tim Brooks 10/20/2005
       # Updated by Birkhoff Cheng 09/21/2021 (send files to syslog instead of email)
-      use Sys::Hostname;
+      use warnings;
+      use strict;
       use Sys::Syslog;
-      chomp($option = $ARGV[0]);
-      if ($option eq "-h" || $option eq "--help") { #Go to Usage subroutine for help with option of -h or --help.
-          &Usage;
-      } else {
-          # Get the localhost name
-          $hostname = hostname();
-          $passwd = "/etc/passwd";
-          # Get root's home directory
-          open(PASSWD,$passwd);
-          while (<PASSWD>){
-              chomp;
-              ($login, $passwd, $uid, $gid, $gcos, $home, $shell) = split /:/;
-              if ($uid == 0){
-                  $roothome = $home;
-              }
-              close (PASSWD);
+      use File::HomeDir;
+      # Get the localhost name
+      my $roothome = File::HomeDir->users_home("root");
+      my $k5 = "$roothome/.k5login";
+      # Get the .k5login file to send.
+      if (-e $k5) {
+          open(K5LOGIN, '<', $k5) or die $!;
+          openlog("k5login_audit", 0, "LOG_LOCAL0") or die "Cannot open log";
+          while (<K5LOGIN>) {
+              if ($_ =~ /^\s*#/) { next; }
+              syslog("info", $_);
           }
-          $k5 = "$roothome/.k5login";
-          # Get the .k5login file to send.
-          if (-e $k5){
-              open (K5LOGIN,$k5);
-              openlog("$0", 0, "LOG_LOCAL0") or die "Cannot open log";
-              @k5login = <K5LOGIN>;
-              foreach $line (@k5login){
-                  if ($line =~ /^\s*#/) { next; }
-                  syslog(LOG_INFO, "$line");
-              }
-              close(K5LOGIN);
-              closelog();
-          }
-      }
-      sub Usage {# Print the usage.
-          print "Usage:\n";
-          print " k5login_otp_audit.pl\n";
-          print "      -h          print this usage information\n";
-          print "\n";
-          exit;
+          closelog();
+          close(K5LOGIN);
       }
