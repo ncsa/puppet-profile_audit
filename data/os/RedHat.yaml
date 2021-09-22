@@ -1,3 +1,5 @@
 ---
 profile_audit::root_equivalence::packages:
   - "perl"
+  - "perl-File-HomeDir"
+  - "perl-Sys-Syslog"
