@@ -7,6 +7,7 @@
 ### Classes
 
 * [`profile_audit`](#profile_audit): A short summary of the purpose of this class
+* [`profile_audit::net_process_log`](#profile_auditnet_process_log): Logs user processes and open network connections to syslog
 * [`profile_audit::qualys`](#profile_auditqualys): Configure host to be scanned by qualys
 * [`profile_audit::root_equivalence`](#profile_auditroot_equivalence): Configure root equivalence reporting
 * [`profile_audit::vetting`](#profile_auditvetting): Install and configure a security vetting script
@@ -24,6 +25,70 @@ A description of what this class does
 ```puppet
 include profile_audit
 ```
+
+### <a name="profile_auditnet_process_log"></a>`profile_audit::net_process_log`
+
+Logs user processes and open network connections to syslog
+
+#### Examples
+
+##### 
+
+```puppet
+include profile_audit::net_process_log
+```
+
+#### Parameters
+
+The following parameters are available in the `profile_audit::net_process_log` class:
+
+* [`enable_net_process_log`](#enable_net_process_log)
+* [`ignore_users`](#ignore_users)
+* [`ps_arg`](#ps_arg)
+* [`ss_arg`](#ss_arg)
+* [`ss_filter`](#ss_filter)
+* [`minute_interval`](#minute_interval)
+
+##### <a name="enable_net_process_log"></a>`enable_net_process_log`
+
+Data type: `Boolean`
+
+Enable/disable the net_process_log logging
+
+##### <a name="ignore_users"></a>`ignore_users`
+
+Data type: `String`
+
+String to pass to net_process_log.pl script as -i argument.
+Setting to empty string will use default defined in net_process_log.pl.
+Format is a csv of users to ignore. Example : "root,chrony,dbus".
+
+##### <a name="ps_arg"></a>`ps_arg`
+
+Data type: `String`
+
+String to pass to net_process_log.pl script as --psarg argument.
+Setting to empty string will use default defined in net_process_log.pl.
+
+##### <a name="ss_arg"></a>`ss_arg`
+
+Data type: `String`
+
+String to pass to net_process_log.pl script as --ssarg argument.
+Setting to empty string will use default defined in net_process_log.pl
+
+##### <a name="ss_filter"></a>`ss_filter`
+
+Data type: `String`
+
+String to pass to net_process_log.pl script as --ssfilter argument.
+Setting to empty string will use default defined in net_process_log.pl
+
+##### <a name="minute_interval"></a>`minute_interval`
+
+Data type: `String`
+
+Value to use in the minute field of the cron task
 
 ### <a name="profile_auditqualys"></a>`profile_audit::qualys`
 
