@@ -1,4 +1,11 @@
 ---
+profile_audit::net_process_log::enable_net_process_log: false
+profile_audit::net_process_log::ignore_users: ""
+profile_audit::net_process_log::minute_interval: "*/10"
+profile_audit::net_process_log::ps_arg: ""
+profile_audit::net_process_log::ss_arg: ""
+profile_audit::net_process_log::ss_filter: ""
+
 profile_audit::qualys::enabled: false
 profile_audit::qualys::gid: "19999"
 profile_audit::qualys::group: "qualys"

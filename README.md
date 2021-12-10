@@ -25,6 +25,7 @@ This profile installs and configures security auditing functionality used by NCS
 
 * access for qualys user
 * custom root equivalence reporting script
+* (Optional) Logging of user processes and open network connections to syslog
 
 ### Beginning with profile_audit
 
@@ -43,7 +44,33 @@ But in order to enable qualys scanning, at a minimum you will need to set the fo
 
 Refer to https://wiki.ncsa.illinois.edu/display/SecOps/Qualys+Authenticated+Scanning+Host+setup to find existing public keys for projects and how to request new ones.
 
+Logging of user processes and open network connections is disabled by default. To turn that on set `profile_audit::enable_net_process_log: true`. See REFERENCE.md for any customizations if needed.
+
 ## Reference
+
+### class profile_audit::qualys (
+-  Boolean            $enabled,
+-  String             $gid,
+-  String             $group,
+-  String             $homedir,
+-  String             $ip,
+-  Optional[ String ] $ssh_authorized_key,
+-  String             $ssh_authorized_key_type,
+-  Hash               $sshd_custom_cfg,
+-  String             $uid,
+-  String             $user,
+-  String             $user_comment,
+### class profile_audit::root_equivalence (
+-  Hash $crons,
+-  Hash $files,
+-  Array $packages,
+### class profile_audit::net_process_log (
+-  Boolean $enable_net_process_log,
+-  String $ignore_users,
+-  String $ps_arg,
+-  String $ss_arg,
+-  String $ss_filter,
+-  String $minute_interval,
 
 See: [REFERENCE.md](REFERENCE.md)
 
