@@ -43,20 +43,39 @@ class profile_audit::net_process_log (
   }
 
   file { '/root/cron_scripts/net_process_log.pl':
-    ensure => $ensure_parm,
-    mode   => '0750',
-    owner  => 'root',
-    group  => 'root',
-    source => "puppet:///modules/${module_name}/net_process_log.pl",
-    require => File["/root/cron_scripts"],
+    ensure  => $ensure_parm,
+    mode    => '0750',
+    owner   => 'root',
+    group   => 'root',
+    source  => "puppet:///modules/${module_name}/net_process_log.pl",
+    require => File['/root/cron_scripts'],
   }
 
   # Setup any non-default options, otherwise *_option stays blank
   # so we use default(s) from script
-  if $ignore_users != "" { $ignore_users_option = "-i \"${ignore_users}\"" }
-  if $ps_arg != "" { $ps_arg_option = "--psarg \"${ps_arg}\"" }
-  if $ss_arg != "" { $ss_arg_option = "--ssarg \"${ss_arg}\"" }
-  if $ss_filter != "" { $ss_filter_option = "--ssfilter \"${ss_filter}\"" }
+  if $ignore_users != '' {
+    $ignore_users_option = "-i \"${ignore_users}\""
+  } else {
+    $ignore_users_option = ''
+  }
+
+  if $ps_arg != '' {
+    $ps_arg_option = "--psarg \"${ps_arg}\""
+  } else {
+    $ps_arg_option = ''
+  }
+
+  if $ss_arg != '' {
+    $ss_arg_option = "--ssarg \"${ss_arg}\""
+  } else {
+    $ss_arg_option = ''
+  }
+
+  if $ss_filter != '' {
+    $ss_filter_option = "--ssfilter \"${ss_filter}\""
+  } else {
+    $ss_filter_option = ''
+  }
 
   cron { 'net_process_log':
     ensure      => $ensure_parm,
