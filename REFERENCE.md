@@ -9,6 +9,8 @@
 * [`profile_audit`](#profile_audit): A short summary of the purpose of this class
 * [`profile_audit::net_process_log`](#profile_auditnet_process_log): Logs user processes and open network connections to syslog
 * [`profile_audit::qualys`](#profile_auditqualys): Configure host to be scanned by qualys
+* [`profile_audit::qualys_eus_reporting`](#profile_auditqualys_eus_reporting): Add wrapper for subscription-manager to lie about enabled repos (requires that qualys can sudo to root)
+See SVC-12072 for details
 * [`profile_audit::root_equivalence`](#profile_auditroot_equivalence): Configure root equivalence reporting
 * [`profile_audit::vetting`](#profile_auditvetting): Install and configure a security vetting script
 
@@ -107,6 +109,8 @@ include profile_audit::qualys
 The following parameters are available in the `profile_audit::qualys` class:
 
 * [`enabled`](#enabled)
+* [`escalated_scans`](#escalated_scans)
+* [`escalated_scan_sudocfg`](#escalated_scan_sudocfg)
 * [`gid`](#gid)
 * [`group`](#group)
 * [`homedir`](#homedir)
@@ -123,6 +127,18 @@ The following parameters are available in the `profile_audit::qualys` class:
 Data type: `Boolean`
 
 Boolean to define if authenticated qualys scan enabled
+
+##### <a name="escalated_scans"></a>`escalated_scans`
+
+Data type: `Boolean`
+
+Boolean to define if qualys should be allowed to sudo to root for escalated scans
+
+##### <a name="escalated_scan_sudocfg"></a>`escalated_scan_sudocfg`
+
+Data type: `String`
+
+String setting qualys sudo config
 
 ##### <a name="gid"></a>`gid`
 
@@ -183,6 +199,38 @@ String of the username of the local qualys user
 Data type: `String`
 
 String of the comment in passwd file of the local qualys user
+
+### <a name="profile_auditqualys_eus_reporting"></a>`profile_audit::qualys_eus_reporting`
+
+Add wrapper for subscription-manager to lie about enabled repos (requires that qualys can sudo to root)
+See SVC-12072 for details
+
+#### Examples
+
+##### 
+
+```puppet
+include profile_audit::qualys_eus_reporting
+```
+
+#### Parameters
+
+The following parameters are available in the `profile_audit::qualys_eus_reporting` class:
+
+* [`enabled`](#enabled)
+* [`repos`](#repos)
+
+##### <a name="enabled"></a>`enabled`
+
+Data type: `Boolean`
+
+Boolean to enable/disable wrapper for subscription-manager
+
+##### <a name="repos"></a>`repos`
+
+Data type: `Array[Hash]`
+
+Array of hashes containing repos to add to the qualys_eus_reporting.sh script
 
 ### <a name="profile_auditroot_equivalence"></a>`profile_audit::root_equivalence`
 

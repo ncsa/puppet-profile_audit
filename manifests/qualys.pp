@@ -5,6 +5,12 @@
 # @param enabled
 #   Boolean to define if authenticated qualys scan enabled
 #
+# @param escalated_scans
+#   Boolean to define if qualys should be allowed to sudo to root for escalated scans
+#
+# @param escalated_scan_sudocfg
+#   String setting qualys sudo config
+#
 # @param gid
 #   String of the GID of the local qualys user
 #
@@ -40,6 +46,8 @@
 #
 class profile_audit::qualys (
   Boolean            $enabled,
+  Boolean            $escalated_scans,
+  String             $escalated_scan_sudocfg,
   String             $gid,
   String             $group,
   String             $homedir,
@@ -121,6 +129,21 @@ class profile_audit::qualys (
     $match_condition = "User ${user}"
     sshd_config_match { $match_condition :
       ensure => absent,
+    }
+
+    if ( $escalated_scans ) {
+      pam_access::entry { 'Allow sudo for qualys':
+        user       => 'qualys',
+        origin     => 'LOCAL',
+        permission => '+',
+        position   => '-1',
+      }
+
+      sudo::conf { 'qualys_escalated_scan':
+        ensure   => 'present',
+        priority => 10,
+        content  => $escalated_scan_sudocfg,
+      }
     }
 
   }
