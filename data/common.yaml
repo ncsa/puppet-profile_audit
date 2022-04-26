@@ -7,6 +7,12 @@ profile_audit::net_process_log::ss_arg: ""
 profile_audit::net_process_log::ss_filter: ""
 
 profile_audit::qualys::enabled: false
+profile_audit::qualys::escalated_scans: false
+profile_audit::qualys::escalated_scan_sudocfg: |
+  Defaults:qualys !mail_always
+  Defaults:qualys !requiretty
+  %qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
+  qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
 profile_audit::qualys::gid: "19999"
 profile_audit::qualys::group: "qualys"
 profile_audit::qualys::homedir: "/home/qualys"
@@ -23,6 +29,8 @@ profile_audit::qualys::sshd_custom_cfg:
 profile_audit::qualys::uid: "19999"
 profile_audit::qualys::user: "qualys"
 profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.edu"
+
+profile_audit::qualys_eus_reporting::enabled: false
 
 profile_audit::root_equivalence::crons:
   "root equivalence reporting":
