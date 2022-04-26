@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ "$1" == "repos" ] && [ "$2" == "--list-enabled" ];then
+
+cat << EOF
+#################################################
+## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
+#################################################
+----------------------------------------------------------
+    Available Repositories in /etc/yum.repos.d/redhat.repo
+----------------------------------------------------------
+
+<% $profile_audit::qualys_eus_reporting::repos.each |$repo| { -%>
+Repo ID:   <%= $repo[id] %>
+Repo Name: <%= $repo[name] %>
+Repo URL:  <%= $repo[url] %>
+Enabled:   1
+
+<% } -%>
+
+#################################################
+## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
+#################################################
+EOF
+
+else
+        /usr/bin/subscription-manager "$@"
+fi
+

@@ -1,0 +1,4 @@
+Defaults:qualys !mail_always
+Defaults:qualys !requiretty
+%qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
+qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
