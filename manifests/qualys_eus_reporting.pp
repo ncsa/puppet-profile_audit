@@ -15,25 +15,24 @@ class profile_audit::qualys_eus_reporting (
 ){
 
   if ($enabled) {
-    $sudo_ensure_parm = 'present'
+    #$sudo_ensure_parm = 'present'
 
+    # TODO remove this extra branch
     if $facts['rhsm_manage_repo'] {
-      notify { 'manage_repos_true': } # TODO remove this
       $alias_ensure_parm = 'absent'
     } else {
-      notify { 'manage_repos_false': } # TODO remove this
       $alias_ensure_parm = 'present'
     }
 
-    pam_access::entry { 'Allow sudo for qualys':
-      user       => 'qualys',
-      origin     => 'LOCAL',
-      permission => '+',
-      position   => '-1',
-    }
+    #pam_access::entry { 'Allow sudo for qualys':
+    #  user       => 'qualys',
+    #  origin     => 'LOCAL',
+    #  permission => '+',
+    #  position   => '-1',
+    #}
 
   } else {
-    $sudo_ensure_parm = 'absent'
+    #$sudo_ensure_parm = 'absent'
     $alias_ensure_parm = 'absent'
   }
 
@@ -54,10 +53,10 @@ class profile_audit::qualys_eus_reporting (
     content => epp( "${module_name}/qualys_eus_reporting.sh.epp"),
   }
 
-  sudo::conf { 'qualys_scan':
-    ensure   => $sudo_ensure_parm,
-    priority => 10,
-    content  => file("${module_name}/qualys_reporting"),
-  }
+  #sudo::conf { 'qualys_scan':
+  #  ensure   => $sudo_ensure_parm,
+  #  priority => 10,
+  #  content  => file("${module_name}/qualys_reporting"),
+  #}
 
 }
