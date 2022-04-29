@@ -17,6 +17,12 @@ class profile_audit::qualys_eus_reporting (
   # Alias that gets added to roots .bashrc
   $bash_alias = 'function subscription-manager { /root/qualys_eus_reporting.sh "$@"; } #qualys_EUS_fake'
 
+  if $facts['rhsm_manage_repo'] {
+    notify { 'manage_repos_true': } # TODO remove this
+  } else {
+    notify { 'manage_repos_false': } # TODO remove this
+  }
+
   if ($enabled) {
     $sudo_ensure_parm = 'present'
 
