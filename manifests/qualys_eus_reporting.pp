@@ -17,15 +17,42 @@ class profile_audit::qualys_eus_reporting (
   # Alias that gets added to roots .bashrc
   $bash_alias = 'function subscription-manager { /root/qualys_eus_reporting.sh "$@"; } #qualys_EUS_fake'
 
-  if $facts['rhsm_manage_repo'] {
-    notify { 'manage_repos_true': } # TODO remove this
-  } else {
-    notify { 'manage_repos_false': } # TODO remove this
-  }
+  #if $facts['rhsm_manage_repo'] {
+  #  notify { 'manage_repos_true': } # TODO remove this
+  #} else {
+  #  notify { 'manage_repos_false': } # TODO remove this
+  #}
 
   if ($enabled) {
     $sudo_ensure_parm = 'present'
 
+
+    if $facts['rhsm_manage_repo'] {
+      notify { 'manage_repos_true': } # TODO remove this
+      # do not need to lie
+
+      $script_ensure_parm = 'absent'
+
+      exec { 'remove_qualys_EUS_alias':
+        path    => '/bin:/usr/bin',
+        command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
+        onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
+      }
+
+
+    } else {
+      notify { 'manage_repos_false': } # TODO remove this
+      # need to lie
+
+      $script_ensure_parm = 'present'
+      
+      exec { 'add_qualys_EUS_alias':
+        path    => '/bin:/usr/bin',
+        command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
+        unless  => "grep \'${bash_alias}\' /root/.bashrc",
+      }
+
+    }
 
     #if ( !$::rhsm::enabled ) {
     #  # lie about repos
