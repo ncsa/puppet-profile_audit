@@ -45,7 +45,7 @@ class profile_audit::qualys_eus_reporting (
       # need to lie
 
       $script_ensure_parm = 'present'
-      
+
       exec { 'add_qualys_EUS_alias':
         path    => '/bin:/usr/bin',
         command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
