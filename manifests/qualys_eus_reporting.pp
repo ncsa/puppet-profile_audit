@@ -14,81 +14,16 @@ class profile_audit::qualys_eus_reporting (
   Array[Hash] $repos,
 ){
 
-  # Alias that gets added to roots .bashrc
-  $bash_alias = 'function subscription-manager { /root/qualys_eus_reporting.sh "$@"; } #qualys_EUS_fake'
-
-  #if $facts['rhsm_manage_repo'] {
-  #  notify { 'manage_repos_true': } # TODO remove this
-  #} else {
-  #  notify { 'manage_repos_false': } # TODO remove this
-  #}
-
   if ($enabled) {
     $sudo_ensure_parm = 'present'
 
-
     if $facts['rhsm_manage_repo'] {
       notify { 'manage_repos_true': } # TODO remove this
-      # do not need to lie
-
-      $script_ensure_parm = 'absent'
-
-      exec { 'remove_qualys_EUS_alias':
-        path    => '/bin:/usr/bin',
-        command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
-        onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
-      }
-
-
+      $alias_ensure_parm = 'absent'
     } else {
       notify { 'manage_repos_false': } # TODO remove this
-      # need to lie
-
-      $script_ensure_parm = 'present'
-
-      exec { 'add_qualys_EUS_alias':
-        path    => '/bin:/usr/bin',
-        command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
-        unless  => "grep \'${bash_alias}\' /root/.bashrc",
-      }
-
+      $alias_ensure_parm = 'present'
     }
-
-    #if ( !$::rhsm::enabled ) {
-    #  # lie about repos
-    #} elsif ( $::rhsm::enabled ) and ( !$::rhsm::manage_repos )
-    #  # lie about repos
-    #} else {
-    #  # do not lie about repos
-    #}
-
-
-    #if ( $::rhsm::manage_repos ) {
-
-    #  notify { 'manage_repos_true': } # TODO remove this
-
-    #  # Using rhsm to manage repos, remove qualys repo lying if present
-    #  $script_ensure_parm = 'absent'
-
-    #  exec { 'remove_qualys_EUS_alias':
-    #    path    => '/bin:/usr/bin',
-    #    command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
-    #    onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
-    #  }
-
-    #} else {
-
-    #  notify { 'manage_repos_false': } # TODO remove this
-
-    #  # Not using rhsm, need to lie about repos
-    #  $script_ensure_parm = 'present'
-
-    #  exec { 'add_qualys_EUS_alias':
-    #    path    => '/bin:/usr/bin',
-    #    command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
-    #    unless  => "grep \'${bash_alias}\' /root/.bashrc",
-    #  }
-    #}
 
     pam_access::entry { 'Allow sudo for qualys':
       user       => 'qualys',
@@ -99,18 +34,20 @@ class profile_audit::qualys_eus_reporting (
 
   } else {
     $sudo_ensure_parm = 'absent'
-    $script_ensure_parm = 'absent'
-
-    exec { 'remove_qualys_EUS_alias':
-      path    => '/bin:/usr/bin',
-      command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
-      onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
-    }
-
+    $alias_ensure_parm = 'absent'
   }
 
+  file { '/etc/profile.d/qualys_eus_reporting.sh':
+    ensure  => $alias_ensure_parm,
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    content => file("${module_name}/qualys_eus_reporting.sh"),
+  }
+
+  # Create script that the alias will call
   file { '/root/qualys_eus_reporting.sh':
-    ensure  => $script_ensure_parm,
+    ensure  => $alias_ensure_parm,
     mode    => '0750',
     owner   => 'root',
     group   => 'root',
@@ -122,6 +59,5 @@ class profile_audit::qualys_eus_reporting (
     priority => 10,
     content  => file("${module_name}/qualys_reporting"),
   }
-
 
 }
