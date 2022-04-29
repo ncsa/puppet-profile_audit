@@ -14,25 +14,9 @@ class profile_audit::qualys_eus_reporting (
   Array[Hash] $repos,
 ){
 
-  if ($enabled) {
-    #$sudo_ensure_parm = 'present'
-
-    # TODO remove this extra branch
-    if $facts['rhsm_manage_repo'] {
-      $alias_ensure_parm = 'absent'
-    } else {
-      $alias_ensure_parm = 'present'
-    }
-
-    #pam_access::entry { 'Allow sudo for qualys':
-    #  user       => 'qualys',
-    #  origin     => 'LOCAL',
-    #  permission => '+',
-    #  position   => '-1',
-    #}
-
+  if ($enabled) and (! $facts['rhsm_manage_repo'] ) {
+    $alias_ensure_parm = 'present'
   } else {
-    #$sudo_ensure_parm = 'absent'
     $alias_ensure_parm = 'absent'
   }
 
@@ -52,11 +36,5 @@ class profile_audit::qualys_eus_reporting (
     group   => 'root',
     content => epp( "${module_name}/qualys_eus_reporting.sh.epp"),
   }
-
-  #sudo::conf { 'qualys_scan':
-  #  ensure   => $sudo_ensure_parm,
-  #  priority => 10,
-  #  content  => file("${module_name}/qualys_reporting"),
-  #}
 
 }
