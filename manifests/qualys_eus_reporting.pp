@@ -24,6 +24,8 @@ class profile_audit::qualys_eus_reporting (
 
     if ( $::rhsm::manage_repos ) {
 
+      notify { 'manage_repos_true': } # TODO remove this
+
       # Using rhsm to manage repos, remove qualys repo lying if present
       $script_ensure_parm = 'absent'
 
@@ -34,6 +36,9 @@ class profile_audit::qualys_eus_reporting (
       }
 
     } else {
+
+      notify { 'manage_repos_false': } # TODO remove this
+
       # Not using rhsm, need to lie about repos
       $script_ensure_parm = 'present'
 
