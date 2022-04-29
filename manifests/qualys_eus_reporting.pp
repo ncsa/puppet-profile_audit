@@ -18,16 +18,42 @@ class profile_audit::qualys_eus_reporting (
   $bash_alias = 'function subscription-manager { /root/qualys_eus_reporting.sh "$@"; } #qualys_EUS_fake'
 
   if ($enabled) {
-    $ensure_parm = 'present'
+    $sudo_ensure_parm = 'present'
 
-    exec { 'add_qualys_EUS_alias':
-      path    => '/bin:/usr/bin',
-      command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
-      unless  => "grep \'${bash_alias}\' /root/.bashrc",
+    include rhsm
+
+    if ( $::rhsm::manage_repos ) {
+
+      # Using rhsm to manage repos, remove qualys repo lying if present
+      $script_ensure_parm = 'absent'
+
+      exec { 'remove_qualys_EUS_alias':
+        path    => '/bin:/usr/bin',
+        command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
+        onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
+      }
+
+    } else {
+      # Not using rhsm, need to lie about repos
+      $script_ensure_parm = 'present'
+
+      exec { 'add_qualys_EUS_alias':
+        path    => '/bin:/usr/bin',
+        command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
+        unless  => "grep \'${bash_alias}\' /root/.bashrc",
+      }
+    }
+
+    pam_access::entry { 'Allow sudo for qualys':
+      user       => 'qualys',
+      origin     => 'LOCAL',
+      permission => '+',
+      position   => '-1',
     }
 
   } else {
-    $ensure_parm = 'absent'
+    $sudo_ensure_parm = 'absent'
+    $script_ensure_parm = 'absent'
 
     exec { 'remove_qualys_EUS_alias':
       path    => '/bin:/usr/bin',
@@ -38,7 +64,7 @@ class profile_audit::qualys_eus_reporting (
   }
 
   file { '/root/qualys_eus_reporting.sh':
-    ensure  => $ensure_parm,
+    ensure  => $script_ensure_parm,
     mode    => '0750',
     owner   => 'root',
     group   => 'root',
@@ -46,16 +72,10 @@ class profile_audit::qualys_eus_reporting (
   }
 
   sudo::conf { 'qualys_scan':
-    ensure   => $ensure_parm,
+    ensure   => $sudo_ensure_parm,
     priority => 10,
     content  => file("${module_name}/qualys_reporting"),
   }
 
-  pam_access::entry { 'Allow sudo for qualys':
-    user       => 'qualys',
-    origin     => 'LOCAL',
-    permission => '+',
-    position   => '-1',
-  }
 
 }

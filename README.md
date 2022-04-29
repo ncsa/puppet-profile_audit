@@ -71,6 +71,7 @@ This module depends on the following modules:
 - https://github.com/ncsa/puppet-pam_access
 - https://github.com/ncsa/puppet-sshd
 - https://forge.puppet.com/modules/saz/sudo
+- https://github.com/ncsa/puppet-rhsm
 
 ## Development
 
