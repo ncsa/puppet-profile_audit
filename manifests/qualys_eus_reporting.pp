@@ -20,34 +20,42 @@ class profile_audit::qualys_eus_reporting (
   if ($enabled) {
     $sudo_ensure_parm = 'present'
 
-    include rhsm
 
-    if ( $::rhsm::manage_repos ) {
+    #if ( !$::rhsm::enabled ) {
+    #  # lie about repos
+    #} elsif ( $::rhsm::enabled ) and ( !$::rhsm::manage_repos )
+    #  # lie about repos
+    #} else {
+    #  # do not lie about repos
+    #}
 
-      notify { 'manage_repos_true': } # TODO remove this
 
-      # Using rhsm to manage repos, remove qualys repo lying if present
-      $script_ensure_parm = 'absent'
+    #if ( $::rhsm::manage_repos ) {
 
-      exec { 'remove_qualys_EUS_alias':
-        path    => '/bin:/usr/bin',
-        command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
-        onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
-      }
+    #  notify { 'manage_repos_true': } # TODO remove this
 
-    } else {
+    #  # Using rhsm to manage repos, remove qualys repo lying if present
+    #  $script_ensure_parm = 'absent'
 
-      notify { 'manage_repos_false': } # TODO remove this
+    #  exec { 'remove_qualys_EUS_alias':
+    #    path    => '/bin:/usr/bin',
+    #    command => "sed -i \'\\|${bash_alias}|d\' /root/.bashrc",
+    #    onlyif  => "grep \'${bash_alias}\' /root/.bashrc",
+    #  }
 
-      # Not using rhsm, need to lie about repos
-      $script_ensure_parm = 'present'
+    #} else {
 
-      exec { 'add_qualys_EUS_alias':
-        path    => '/bin:/usr/bin',
-        command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
-        unless  => "grep \'${bash_alias}\' /root/.bashrc",
-      }
-    }
+    #  notify { 'manage_repos_false': } # TODO remove this
+
+    #  # Not using rhsm, need to lie about repos
+    #  $script_ensure_parm = 'present'
+
+    #  exec { 'add_qualys_EUS_alias':
+    #    path    => '/bin:/usr/bin',
+    #    command => "sed -i \'\$a${bash_alias}\' /root/.bashrc",
+    #    unless  => "grep \'${bash_alias}\' /root/.bashrc",
+    #  }
+    #}
 
     pam_access::entry { 'Allow sudo for qualys':
       user       => 'qualys',
