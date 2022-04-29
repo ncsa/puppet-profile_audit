@@ -12,7 +12,7 @@ profile_audit::qualys::escalated_scan_sudocfg: |
   Defaults:qualys !mail_always
   Defaults:qualys !requiretty
   %qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
-  qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL 
+  qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
 profile_audit::qualys::gid: "19999"
 profile_audit::qualys::group: "qualys"
 profile_audit::qualys::homedir: "/home/qualys"
