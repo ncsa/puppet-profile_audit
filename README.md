@@ -52,12 +52,14 @@ By default this is disabled
 
 Qualys is not able to detect if a Redhat server is on EUS when subscription-manager is disabled (common when we point to local repos). This causes Qualys to report packages as out-of-date when in fact they are current as far as EUS goes. This module can setup a work-around so Qualys can detect EUS.
 
-This is done by:
-* Configuring sudo/pam access for qualys to become root
-* Configuring an alias that wraps the command `subscription-manager` to a script this module also configures `/root/qualys_eus_reporting.sh`
-* The `qualys_eus_reporting.sh` script will 'lie' about what repos are enabled when the command `subscription-manager repos --list-enabled` is run. All other `subscription-manager` commands are executed as normal
+To turn this on:
+* Set `profile_audit::qualys_eus_reporting::enabled: true`
+* Set `profile_audit::qualys::escalated_scans: true`
 
-To turn this on, set `profile_audit::qualys_eus_reporting::enabled: true`
+Turning those on will:
+* Configuring sudo/pam access for qualys to become root
+* Configuring an alias for root that wraps the command `subscription-manager` to a script this module also configures `/root/qualys_eus_reporting.sh`
+* The `qualys_eus_reporting.sh` script will 'lie' about what repos are enabled when the command `subscription-manager repos --list-enabled` is run. All other `subscription-manager` commands are executed as normal
 
 
 ## Reference
