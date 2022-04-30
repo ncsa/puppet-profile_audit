@@ -14,6 +14,16 @@ class profile_audit::qualys_eus_reporting (
   Array[Hash] $repos,
 ){
 
+  if ($enabled) and (! $profile_audit::qualys::escalated_scans ) {
+    $notify_text = @("EOT"/)
+    qualys_eus_reporting is enabled but qualys::escalated_scans is not \
+    you should enable qualys::escalated_scans when using qualys_eus_reporting\
+    | EOT
+    notify { $notify_text:
+      withpath => true,
+    }
+  } 
+
   if ($enabled) and (! $facts['rhsm_manage_repo'] ) {
     $alias_ensure_parm = 'present'
   } else {
