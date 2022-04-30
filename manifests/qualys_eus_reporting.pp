@@ -22,7 +22,7 @@ class profile_audit::qualys_eus_reporting (
     notify { $notify_text:
       withpath => true,
     }
-  } 
+  }
 
   if ($enabled) and (! $facts['rhsm_manage_repo'] ) {
     $alias_ensure_parm = 'present'
