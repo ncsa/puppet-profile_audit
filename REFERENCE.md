@@ -109,6 +109,8 @@ include profile_audit::qualys
 The following parameters are available in the `profile_audit::qualys` class:
 
 * [`enabled`](#enabled)
+* [`escalated_scans`](#escalated_scans)
+* [`escalated_scan_sudocfg`](#escalated_scan_sudocfg)
 * [`gid`](#gid)
 * [`group`](#group)
 * [`homedir`](#homedir)
@@ -125,6 +127,18 @@ The following parameters are available in the `profile_audit::qualys` class:
 Data type: `Boolean`
 
 Boolean to define if authenticated qualys scan enabled
+
+##### <a name="escalated_scans"></a>`escalated_scans`
+
+Data type: `Boolean`
+
+Boolean to define if qualys should be allowed to sudo to root for escalated scans
+
+##### <a name="escalated_scan_sudocfg"></a>`escalated_scan_sudocfg`
+
+Data type: `String`
+
+String setting qualys sudo config
 
 ##### <a name="gid"></a>`gid`
 
