@@ -24,6 +24,12 @@ class profile_audit::qualys_eus_reporting (
     }
   }
 
+  if ($enabled) and (! $repos ) {
+    notify { 'qualys_eus_reporting is enabled but repos is not defined':
+      withpath => true,
+    }
+  }
+
   if ($enabled) and (! $facts['rhsm_manage_repo'] ) {
     $alias_ensure_parm = 'present'
   } else {
