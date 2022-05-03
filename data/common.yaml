@@ -31,6 +31,7 @@ profile_audit::qualys::user: "qualys"
 profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.edu"
 
 profile_audit::qualys_eus_reporting::enabled: false
+profile_audit::qualys_eus_reporting::repos: []  # Setting this blank for non-EUS, EUS should be set it data/os/RedHat/...
 
 profile_audit::root_equivalence::crons:
   "root equivalence reporting":
