@@ -1,0 +1,2 @@
+---
+profile_audit::root_equivalence::enable_yum_repo: ""
