@@ -136,6 +136,7 @@ include profile_audit::root_equivalence
 The following parameters are available in the `profile_audit::root_equivalence` class:
 
 * [`crons`](#crons)
+* [`enable_yum_repo`](#enable_yum_repo)
 * [`files`](#files)
 * [`packages`](#packages)
 
@@ -144,6 +145,15 @@ The following parameters are available in the `profile_audit::root_equivalence` 
 Data type: `Hash`
 
 Hash of CRON entries for root equivalence reporting
+
+##### <a name="enable_yum_repo"></a>`enable_yum_repo`
+
+Data type: `Optional[String]`
+
+Optional yum repo that must be enabled for list of packages to be installed.
+This is needed to support enabling the rhel-7-server-optional-rpms repo for RHEL 7.
+
+Default value: `''`
 
 ##### <a name="files"></a>`files`
 
