@@ -97,25 +97,16 @@ class profile_audit::qualys (
       $homedir:
         ensure => 'directory',
         mode   => '0700',
-      ;
-      "${homedir}/.ssh":
-        ensure => 'directory',
-        mode   => '0700',
-      ;
-      "${homedir}/.ssh/authorized_keys":
-        ensure => 'present',
-        mode   => '0600',
-      ;
-      default:
-        owner => $user,
-        group => $group,
+        owner  => $user,
+        group  => $group,
       ;
     }
 
     ssh_authorized_key { $user:
-      user => $user,
-      key  => $ssh_authorized_key,
-      type => $ssh_authorized_key_type,
+      user    =>    $user,
+      key     =>    $ssh_authorized_key,
+      type    =>    $ssh_authorized_key_type,
+      require => File[ $homedir ]
     }
 
     ::sshd::allow_from{ 'sshd allow qualys from qualys appliance':
