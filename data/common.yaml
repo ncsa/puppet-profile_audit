@@ -26,6 +26,8 @@ profile_audit::qualys::sshd_custom_cfg:
   MaxAuthTries: "6"
   MaxSessions: "10"
   X11Forwarding: "no"
+profile_audit::qualys::subgid_file: ""
+profile_audit::qualys::subuid_file: ""
 profile_audit::qualys::uid: "19999"
 profile_audit::qualys::user: "qualys"
 profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.edu"

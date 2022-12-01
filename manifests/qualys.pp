@@ -32,6 +32,12 @@
 # @param sshd_custom_cfg
 #   Hash of additional sshd match parameters for matchblock for qualys access
 #
+# @param subgid_file
+#   Path to subgid file if supported by OS
+#
+# @param subuid_file
+#   Path to subuid file if supported by OS
+#
 # @param uid
 #   String of the UID of the local qualys user
 #
@@ -55,6 +61,8 @@ class profile_audit::qualys (
   Optional[ String ] $ssh_authorized_key,
   String             $ssh_authorized_key_type,
   Hash               $sshd_custom_cfg,
+  String             $subgid_file,
+  String             $subuid_file,
   String             $uid,
   String             $user,
   String             $user_comment,
@@ -91,6 +99,22 @@ class profile_audit::qualys (
       purge_ssh_keys => true,
       shell          => '/bin/bash',
       uid            => $uid,
+    }
+
+    if ( ! empty($subgid_file) and ! empty($subuid_file) ) {
+      # CLEAN UP qualys subuid/subgid FILE ENTRIES
+      File_line {
+        ensure            => 'absent',
+        match_for_absence => true,
+      }
+      file_line { "remove ${group} group from ${subgid_file}":
+        path  => $subgid_file,
+        match => "^${group}:*",
+      }
+      file_line { "remove ${user} user from ${subuid_file}":
+        path  => $subuid_file,
+        match => "^${user}:*",
+      }
     }
 
     file {

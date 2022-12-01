@@ -118,6 +118,8 @@ The following parameters are available in the `profile_audit::qualys` class:
 * [`ssh_authorized_key`](#ssh_authorized_key)
 * [`ssh_authorized_key_type`](#ssh_authorized_key_type)
 * [`sshd_custom_cfg`](#sshd_custom_cfg)
+* [`subgid_file`](#subgid_file)
+* [`subuid_file`](#subuid_file)
 * [`uid`](#uid)
 * [`user`](#user)
 * [`user_comment`](#user_comment)
@@ -181,6 +183,18 @@ String of the key type used for the qualys user's authentication
 Data type: `Hash`
 
 Hash of additional sshd match parameters for matchblock for qualys access
+
+##### <a name="subgid_file"></a>`subgid_file`
+
+Data type: `String`
+
+Path to subgid file if supported by OS
+
+##### <a name="subuid_file"></a>`subuid_file`
+
+Data type: `String`
+
+Path to subuid file if supported by OS
 
 ##### <a name="uid"></a>`uid`
 
