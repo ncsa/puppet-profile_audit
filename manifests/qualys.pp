@@ -101,19 +101,30 @@ class profile_audit::qualys (
       uid            => $uid,
     }
 
-    if ( ! empty($subgid_file) and ! empty($subuid_file) ) {
-      # CLEAN UP qualys subuid/subgid FILE ENTRIES
-      File_line {
-        ensure            => 'absent',
-        match_for_absence => true,
+    # SUBORDINATE MIN/MAX - NEED TO BE LESS/GREATER THAN /etc/login.defs OR OS DEFAULTS
+    $sub_gid_min = 0                   # RHEL DEFAULT = 100000
+    $sub_gid_max = 999999999999999999  # RHEL DEFAULT = 600100000
+    $sub_uid_min = 0                   # RHEL DEFAULT = 100000
+    $sub_uid_max = 999999999999999999  # RHEL DEFAULT = 600100000
+
+    if ( ! empty($subgid_file) ) {
+      exec { "remove ${group} user from ${subgid_file}":
+        command => "usermod --del-subgids ${sub_gid_min}-${sub_gid_max} ${group}",
+        onlyif  => "grep ${group} ${subgid_file}",
+        path    => ['/usr/bin', '/usr/sbin', '/sbin'],
+        require => [
+          Group[ $group ],
+        ],
       }
-      file_line { "remove ${group} group from ${subgid_file}":
-        path  => $subgid_file,
-        match => "^${group}:*",
-      }
-      file_line { "remove ${user} user from ${subuid_file}":
-        path  => $subuid_file,
-        match => "^${user}:*",
+    }
+    if ( ! empty($subuid_file) ) {
+      exec { "remove ${user} user from ${subuid_file}":
+        command => "usermod --del-subuids ${sub_uid_min}-${sub_uid_max} ${user}",
+        onlyif  => "grep ${user} ${subuid_file}",
+        path    => ['/usr/bin', '/usr/sbin', '/sbin'],
+        require => [
+          User[ $user ],
+        ],
       }
     }
 
