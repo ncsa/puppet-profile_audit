@@ -110,7 +110,7 @@ class profile_audit::qualys (
     if ( ! empty($subgid_file) ) {
       exec { "remove ${group} user from ${subgid_file}":
         command => "usermod --del-subgids ${sub_gid_min}-${sub_gid_max} ${group}",
-        onlyif  => "grep ${group} ${subgid_file}",
+        onlyif  => "egrep '^${group}:' ${subgid_file}",
         path    => ['/usr/bin', '/usr/sbin', '/sbin'],
         require => [
           Group[ $group ],
@@ -120,7 +120,7 @@ class profile_audit::qualys (
     if ( ! empty($subuid_file) ) {
       exec { "remove ${user} user from ${subuid_file}":
         command => "usermod --del-subuids ${sub_uid_min}-${sub_uid_max} ${user}",
-        onlyif  => "grep ${user} ${subuid_file}",
+        onlyif  => "egrep '^${user}:' ${subuid_file}",
         path    => ['/usr/bin', '/usr/sbin', '/sbin'],
         require => [
           User[ $user ],
