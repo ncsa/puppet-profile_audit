@@ -16,7 +16,7 @@ profile_audit::qualys::escalated_scan_sudocfg: |
 profile_audit::qualys::gid: "19999"
 profile_audit::qualys::group: "qualys"
 profile_audit::qualys::homedir: "/home/qualys"
-profile_audit::qualys::ip: "141.142.148.51"
+profile_audit::qualys::ip: "141.142.148.48/29"
 profile_audit::qualys::ssh_authorized_key: null
 profile_audit::qualys::ssh_authorized_key_type: "rsa"
 profile_audit::qualys::sshd_custom_cfg:
