@@ -1,0 +1,12 @@
+---
+
+profile_audit::qualys_eus_reporting::repos:
+  - id: "rhel-9-for-x86_64-baseos-eus-rpms"
+    name: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS - Extended Update Support (RPMs)"
+    url: "https://cdn.redhat.com/content/eus/rhel9/9.8/x86_64/baseos/os"
+  - id: "codeready-builder-for-rhel-9-x86_64-eus-rpms"
+    name: "Red Hat CodeReady Linux Builder for RHEL 9 x86_64 - Extended Update Support (RPMs)"
+    url: "https://cdn.redhat.com/content/eus/rhel9/9.8/x86_64/codeready-builder/os"
+  - id: "rhel-9-for-x86_64-appstream-eus-rpms"
+    name: "Red Hat Enterprise Linux 9 for x86_64 - AppStream - Extended Update Support (RPMs)"
+    url: "https://cdn.redhat.com/content/eus/rhel9/9.8/x86_64/appstream/os"

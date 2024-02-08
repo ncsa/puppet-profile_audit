@@ -6,7 +6,5 @@
 # @example
 #   include profile_audit::vetting
 class profile_audit::vetting {
-
   ## NOT YET IMPLEMENTED
-
 }
