@@ -24,7 +24,6 @@ Repo URL:  <%= $repo[url] %>
 Enabled:   1
 
 <% } -%>
-
 EOF
 
 elif [ "$1" == "release" ] && [ "$2" == "--list" ];then
