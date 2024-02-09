@@ -57,7 +57,7 @@ Arch:           x86_64
 Status:         Subscribed
 Status Details: 
 Starts:         12/31/2023
-Ends:           12/31/2040
+Ends:           12/31/<%= strftime("%Y") %>
 
 Product Name:   Red Hat Enterprise Linux for x86_64 - Extended Update Support
 Product ID:     70
@@ -66,7 +66,7 @@ Arch:           x86_64
 Status:         Subscribed
 Status Details: 
 Starts:         12/31/2023
-Ends:           12/31/2040
+Ends:           12/31/<%= strftime("%Y") %>
 
 EOF
 
@@ -159,7 +159,7 @@ Add-ons:
 Status Details:      Subscription is current
 Subscription Type:   Standard
 Starts:              12/31/2023
-Ends:                12/31/2040
+Ends:                12/31/<%= strftime("%Y") %>
 Entitlement Type:    Virtual
 
 EOF
