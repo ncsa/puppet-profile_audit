@@ -1,12 +1,17 @@
 #!/bin/bash
 
-if [ "$1" == "repos" ] && [ "$2" == "--list-enabled" ];then
-
-cat << EOF
+# FUNCTION TO DISPLAY FAKE DATA WARNING
+function warnfakeoutput() {
+  cat << EOF 1>&2
 #################################################
 ## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
 #################################################
+EOL
+}
 
+if [ "$1" == "repos" ] && [ "$2" == "--list-enabled" ];then
+  warnfakeoutput
+  cat << EOF
 +----------------------------------------------------------+
     Available Repositories in /etc/yum.repos.d/redhat.repo
 +----------------------------------------------------------+
@@ -17,14 +22,11 @@ Repo URL:  <%= $repo[url] %>
 Enabled:   1
 
 <% } -%>
-
-#################################################
-## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
-#################################################
 EOF
 
 elif [ "$1" == "release" ] && [ "$2" == "--list" ];then
-cat << EOF
+  warnfakeoutput
+  cat << EOF
 +-------------------------------------------+
           Available Releases
 +-------------------------------------------+
@@ -32,23 +34,17 @@ cat << EOF
 <% range(0, $facts['lsbminordistrelease']).each |$minor_version| { -%>
 <%= $facts['operatingsystemmajrelease'] %>.<%= $minor_version %>
 <% } -%>
-
-#################################################
-## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
-#################################################
 EOF
 
 elif [ "$1" == "release" ] && [ "$2" == "--show" ];then
-cat << EOF
+  warnfakeoutput
+  cat << EOF
 Release: <%= $facts['operatingsystemrelease'] %>
-
-#################################################
-## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
-#################################################
 EOF
 
 elif [ "$1" == "list" ] && [ "$2" == "--installed" ];then
-cat << EOF
+  warnfakeoutput
+  cat << EOF
 +-------------------------------------------+
     Installed Product Status
 +-------------------------------------------+
@@ -69,14 +65,11 @@ Status:         Subscribed
 Status Details: 
 Starts:         12/31/2023
 Ends:           12/31/2040
-
-#################################################
-## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
-#################################################
 EOF
 
 elif [ "$1" == "list" ] && [ "$2" == "--consumed" ];then
-cat << EOF
+  warnfakeoutput
+  cat << EOF
 +-------------------------------------------+
    Consumed Subscriptions
 +-------------------------------------------+
@@ -165,13 +158,10 @@ Subscription Type:   Standard
 Starts:              12/31/2023
 Ends:                12/31/2040
 Entitlement Type:    Virtual
-
-#################################################
-## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
-#################################################
 EOF
 
 else
-        /usr/bin/subscription-manager "$@"
+  # OTHERWISE PASS ALONG TO REAL COMMAND
+  /usr/bin/subscription-manager "$@"
 fi
 
