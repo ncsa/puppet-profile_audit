@@ -3,10 +3,12 @@
 # FUNCTION TO DISPLAY FAKE DATA WARNING
 function warnfakeoutput() {
 #  cat << EOF 1>&2
+  # TEMPORARILY DISABLE WARNING OUTPUT
+  cat << EOF > /dev/null
 #################################################
 ## WARNING THIS INFO IS BEING FAKED FOR QUALYS ##
 #################################################
-#EOF
+EOF
 }
 
 if [ "$1" == "repos" ] && [ "$2" == "--list-enabled" ];then
