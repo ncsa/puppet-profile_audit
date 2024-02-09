@@ -35,7 +35,6 @@ class profile_audit::net_process_log (
   String $ss_filter,
   String $minute_interval,
 ) {
-
   if ($enable_net_process_log) {
     $ensure_parm = 'present'
   } else {
@@ -85,8 +84,7 @@ class profile_audit::net_process_log (
     month       => '*',
     weekday     => '*',
     monthday    => '*',
-    environment => ['SHELL=/bin/sh', ],
-    command     => "/root/cron_scripts/net_process_log.pl ${ignore_users_option} ${ps_arg_option} ${ss_arg_option} ${ss_filter_option} >/dev/null 2>&1"
+    environment => ['SHELL=/bin/sh',],
+    command     => "/root/cron_scripts/net_process_log.pl ${ignore_users_option} ${ps_arg_option} ${ss_arg_option} ${ss_filter_option} >/dev/null 2>&1",
   }
-
 }

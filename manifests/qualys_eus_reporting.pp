@@ -12,13 +12,12 @@
 class profile_audit::qualys_eus_reporting (
   Boolean     $enabled,
   Array[Hash] $repos,
-){
-
+) {
   if ($enabled) and (! $profile_audit::qualys::escalated_scans ) {
     $notify_text = @("EOT"/)
-    qualys_eus_reporting is enabled but qualys::escalated_scans is not \
-    you should enable qualys::escalated_scans when using qualys_eus_reporting\
-    | EOT
+      qualys_eus_reporting is enabled but qualys::escalated_scans is not \
+      you should enable qualys::escalated_scans when using qualys_eus_reporting\
+      | EOT
     notify { $notify_text:
       withpath => true,
     }
@@ -52,5 +51,4 @@ class profile_audit::qualys_eus_reporting (
     group   => 'root',
     content => epp( "${module_name}/qualys_eus_reporting.sh.epp"),
   }
-
 }
