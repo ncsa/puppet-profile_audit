@@ -47,27 +47,10 @@ Refer to https://wiki.ncsa.illinois.edu/display/SecOps/Qualys+Authenticated+Scan
 ### User process logging
 Logging of user processes and open network connections is disabled by default. To turn that on set `profile_audit::enable_net_process_log: true`. See REFERENCE.md for any customizations if needed.
 
-### Qualys EUS repo detection
-By default this is disabled
+### Qualys EUS Detection History
+Qualys historically had issues on Redhat servers running an EUS release, where Qualys would not realize the server was running an EUS version and would instead report out-of-date packages based on the latest release.  In April 2024 Qualys fixed this issue in "VULSIG version VULNSIGS-2.6.33-2".
 
-Qualys can have issues on Redhat servers running an EUS release, where Qualys will report that your packages are out-of-date even though they are updated with the latest packages from the EUS repos.
-
-There are two hiera settings used to fix this issue, by default they are both set to false
-- `profile_audit::qualys::escalated_scans: false`
-- `profile_audit::qualys_eus_reporting::enabled: false`
-
-If your server is using an EUS release, you will need to set `profile_audit::qualys::escalated_scans: true`. This is because Qualys needs to have sudo access to run the subscription-manager command which is required for Qualys to detect if your server is running an EUS release.
-
-If your server is configured so that the output of `subscription-manager repos --list-enabled` would list no repos, or repos that don't point to the official redhat urls (like clusters where we point servers to use a local snapshot of repos on our provisioning server instead of the repo urls from Redhat), then you also need to set `profile_audit::qualys_eus_reporting::enabled: true`. Doing so will setup an alias for root that wraps the command `subscription-manager` to a script this module installs at `/root/qualys_eus_reporting.sh`. The `qualys_eus_reporting.sh` script will 'lie' about what repos are enabled when the command `subscription-manager repos --list-enabled` is run. All other `subscription-manager` commands are executed as normal.
-
-See this table to summarize when you need `qualys::escalated_scans` and/or `qualys_eus_reporting::enabled`:
-
-|Server on <br />EUS Release| Using Redhat<br />repo URLs |Recommended Setting|
-| --- | --- | --- |
-| False | False | Default (both false) |
-| False | True | Default (both false) |
-| True | False | `profile_audit::qualys::escalated_scans: true`<br />`profile_audit::qualys_eus_reporting::enabled: true` |
-| True | True | `profile_audit::qualys::escalated_scans: true`<br />`profile_audit::qualys_eus_reporting::enabled: false`|
+In the past this profile module had a work around to give fake output from the 'subscription-manager' command to Qualys on systems running EUS. This is no longer needed and has been removed in the latest version.
 
 ## Reference
 

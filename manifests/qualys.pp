@@ -58,7 +58,7 @@ class profile_audit::qualys (
   String             $group,
   String             $homedir,
   String             $ip,
-  Optional[ String ] $ssh_authorized_key,
+  Optional[String] $ssh_authorized_key,
   String             $ssh_authorized_key_type,
   Hash               $sshd_custom_cfg,
   String             $subgid_file,
@@ -67,10 +67,8 @@ class profile_audit::qualys (
   String             $user,
   String             $user_comment,
 ) {
-
   # ONLY SETUP If enabled AND A ssh_authorized_key IS PROVIDED FOR QUALYS USER
-  if ( $enabled and ! $ssh_authorized_key )
-  {
+  if ( $enabled and ! $ssh_authorized_key ) {
     $notify_text = @("EOT"/)
       Qualys is enabled, but no ssh authorized key has been supplied for the \
       qualys user. A ssh authorized key must be supplied if qualys is enabled.\
@@ -79,9 +77,7 @@ class profile_audit::qualys (
       withpath => true,
     }
   }
-  elsif ( $enabled and $ssh_authorized_key )
-  {
-
+  elsif ( $enabled and $ssh_authorized_key ) {
     group { $group:
       ensure => 'present',
       name   => $group,
@@ -113,7 +109,7 @@ class profile_audit::qualys (
         onlyif  => "egrep '^${group}:' ${subgid_file}",
         path    => ['/usr/bin', '/usr/sbin', '/sbin'],
         require => [
-          Group[ $group ],
+          Group[$group],
         ],
       }
     }
@@ -123,7 +119,7 @@ class profile_audit::qualys (
         onlyif  => "egrep '^${user}:' ${subuid_file}",
         path    => ['/usr/bin', '/usr/sbin', '/sbin'],
         require => [
-          User[ $user ],
+          User[$user],
         ],
       }
     }
@@ -134,20 +130,20 @@ class profile_audit::qualys (
         mode   => '0700',
         owner  => $user,
         group  => $group,
-      ;
+        ;
     }
 
     ssh_authorized_key { $user:
-      user    =>    $user,
-      key     =>    $ssh_authorized_key,
-      type    =>    $ssh_authorized_key_type,
-      require => File[ $homedir ]
+      user    => $user,
+      key     => $ssh_authorized_key,
+      type    => $ssh_authorized_key_type,
+      require => File[$homedir],
     }
 
-    ::sshd::allow_from{ 'sshd allow qualys from qualys appliance':
-      hostlist                => [ $ip ],
-      users                   => [ $user ],
-      groups                  => [ $group ],
+    ::sshd::allow_from { 'sshd allow qualys from qualys appliance':
+      hostlist                => [$ip],
+      users                   => [$user],
+      groups                  => [$group],
       additional_match_params => $sshd_custom_cfg,
     }
 
@@ -171,7 +167,5 @@ class profile_audit::qualys (
         content  => $escalated_scan_sudocfg,
       }
     }
-
   }
-
 }
