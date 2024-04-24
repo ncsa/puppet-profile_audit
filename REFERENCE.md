@@ -7,12 +7,14 @@
 ### Classes
 
 * [`profile_audit`](#profile_audit): A short summary of the purpose of this class
-* [`profile_audit::net_process_log`](#profile_auditnet_process_log): Logs user processes and open network connections to syslog
-* [`profile_audit::qualys`](#profile_auditqualys): Configure host to be scanned by qualys
-* [`profile_audit::qualys_eus_reporting`](#profile_auditqualys_eus_reporting): Add wrapper for subscription-manager to lie about enabled repos (requires that qualys can sudo to root)
-See SVC-12072 for details
-* [`profile_audit::root_equivalence`](#profile_auditroot_equivalence): Configure root equivalence reporting
-* [`profile_audit::vetting`](#profile_auditvetting): Install and configure a security vetting script
+* [`profile_audit::net_process_log`](#profile_audit--net_process_log): Logs user processes and open network connections to syslog
+* [`profile_audit::qualys`](#profile_audit--qualys): Configure host to be scanned by qualys
+* [`profile_audit::qualys_eus_reporting`](#profile_audit--qualys_eus_reporting): Remove old, historical wrapper for subscription-manager to lie about enabled repos.
+This only cleans up old files that are no longer needed.
+See SVCPLAN-5381 & SVC-12072 for historical details.
+Once all NCSA hosts have removed these files this class can go away.
+* [`profile_audit::root_equivalence`](#profile_audit--root_equivalence): Configure root equivalence reporting
+* [`profile_audit::vetting`](#profile_audit--vetting): Install and configure a security vetting script
 
 ## Classes
 
@@ -28,7 +30,7 @@ A description of what this class does
 include profile_audit
 ```
 
-### <a name="profile_auditnet_process_log"></a>`profile_audit::net_process_log`
+### <a name="profile_audit--net_process_log"></a>`profile_audit::net_process_log`
 
 Logs user processes and open network connections to syslog
 
@@ -44,20 +46,20 @@ include profile_audit::net_process_log
 
 The following parameters are available in the `profile_audit::net_process_log` class:
 
-* [`enable_net_process_log`](#enable_net_process_log)
-* [`ignore_users`](#ignore_users)
-* [`ps_arg`](#ps_arg)
-* [`ss_arg`](#ss_arg)
-* [`ss_filter`](#ss_filter)
-* [`minute_interval`](#minute_interval)
+* [`enable_net_process_log`](#-profile_audit--net_process_log--enable_net_process_log)
+* [`ignore_users`](#-profile_audit--net_process_log--ignore_users)
+* [`ps_arg`](#-profile_audit--net_process_log--ps_arg)
+* [`ss_arg`](#-profile_audit--net_process_log--ss_arg)
+* [`ss_filter`](#-profile_audit--net_process_log--ss_filter)
+* [`minute_interval`](#-profile_audit--net_process_log--minute_interval)
 
-##### <a name="enable_net_process_log"></a>`enable_net_process_log`
+##### <a name="-profile_audit--net_process_log--enable_net_process_log"></a>`enable_net_process_log`
 
 Data type: `Boolean`
 
 Enable/disable the net_process_log logging
 
-##### <a name="ignore_users"></a>`ignore_users`
+##### <a name="-profile_audit--net_process_log--ignore_users"></a>`ignore_users`
 
 Data type: `String`
 
@@ -65,34 +67,34 @@ String to pass to net_process_log.pl script as -i argument.
 Setting to empty string will use default defined in net_process_log.pl.
 Format is a csv of users to ignore. Example : "root,chrony,dbus".
 
-##### <a name="ps_arg"></a>`ps_arg`
+##### <a name="-profile_audit--net_process_log--ps_arg"></a>`ps_arg`
 
 Data type: `String`
 
 String to pass to net_process_log.pl script as --psarg argument.
 Setting to empty string will use default defined in net_process_log.pl.
 
-##### <a name="ss_arg"></a>`ss_arg`
+##### <a name="-profile_audit--net_process_log--ss_arg"></a>`ss_arg`
 
 Data type: `String`
 
 String to pass to net_process_log.pl script as --ssarg argument.
 Setting to empty string will use default defined in net_process_log.pl
 
-##### <a name="ss_filter"></a>`ss_filter`
+##### <a name="-profile_audit--net_process_log--ss_filter"></a>`ss_filter`
 
 Data type: `String`
 
 String to pass to net_process_log.pl script as --ssfilter argument.
 Setting to empty string will use default defined in net_process_log.pl
 
-##### <a name="minute_interval"></a>`minute_interval`
+##### <a name="-profile_audit--net_process_log--minute_interval"></a>`minute_interval`
 
 Data type: `String`
 
 Value to use in the minute field of the cron task
 
-### <a name="profile_auditqualys"></a>`profile_audit::qualys`
+### <a name="profile_audit--qualys"></a>`profile_audit::qualys`
 
 See https://wiki.ncsa.illinois.edu/display/SecOps/Qualys+Authenticated+Scanning+Host+setup
 
@@ -108,116 +110,118 @@ include profile_audit::qualys
 
 The following parameters are available in the `profile_audit::qualys` class:
 
-* [`enabled`](#enabled)
-* [`escalated_scans`](#escalated_scans)
-* [`escalated_scan_sudocfg`](#escalated_scan_sudocfg)
-* [`gid`](#gid)
-* [`group`](#group)
-* [`homedir`](#homedir)
-* [`ip`](#ip)
-* [`ssh_authorized_key`](#ssh_authorized_key)
-* [`ssh_authorized_key_type`](#ssh_authorized_key_type)
-* [`sshd_custom_cfg`](#sshd_custom_cfg)
-* [`subgid_file`](#subgid_file)
-* [`subuid_file`](#subuid_file)
-* [`uid`](#uid)
-* [`user`](#user)
-* [`user_comment`](#user_comment)
+* [`enabled`](#-profile_audit--qualys--enabled)
+* [`escalated_scans`](#-profile_audit--qualys--escalated_scans)
+* [`escalated_scan_sudocfg`](#-profile_audit--qualys--escalated_scan_sudocfg)
+* [`gid`](#-profile_audit--qualys--gid)
+* [`group`](#-profile_audit--qualys--group)
+* [`homedir`](#-profile_audit--qualys--homedir)
+* [`ip`](#-profile_audit--qualys--ip)
+* [`ssh_authorized_key`](#-profile_audit--qualys--ssh_authorized_key)
+* [`ssh_authorized_key_type`](#-profile_audit--qualys--ssh_authorized_key_type)
+* [`sshd_custom_cfg`](#-profile_audit--qualys--sshd_custom_cfg)
+* [`subgid_file`](#-profile_audit--qualys--subgid_file)
+* [`subuid_file`](#-profile_audit--qualys--subuid_file)
+* [`uid`](#-profile_audit--qualys--uid)
+* [`user`](#-profile_audit--qualys--user)
+* [`user_comment`](#-profile_audit--qualys--user_comment)
 
-##### <a name="enabled"></a>`enabled`
+##### <a name="-profile_audit--qualys--enabled"></a>`enabled`
 
 Data type: `Boolean`
 
 Boolean to define if authenticated qualys scan enabled
 
-##### <a name="escalated_scans"></a>`escalated_scans`
+##### <a name="-profile_audit--qualys--escalated_scans"></a>`escalated_scans`
 
 Data type: `Boolean`
 
 Boolean to define if qualys should be allowed to sudo to root for escalated scans
 
-##### <a name="escalated_scan_sudocfg"></a>`escalated_scan_sudocfg`
+##### <a name="-profile_audit--qualys--escalated_scan_sudocfg"></a>`escalated_scan_sudocfg`
 
 Data type: `String`
 
 String setting qualys sudo config
 
-##### <a name="gid"></a>`gid`
+##### <a name="-profile_audit--qualys--gid"></a>`gid`
 
 Data type: `String`
 
 String of the GID of the local qualys user
 
-##### <a name="group"></a>`group`
+##### <a name="-profile_audit--qualys--group"></a>`group`
 
 Data type: `String`
 
 String of the group name of the local qualys user
 
-##### <a name="homedir"></a>`homedir`
+##### <a name="-profile_audit--qualys--homedir"></a>`homedir`
 
 Data type: `String`
 
 String of the home directory path of the local qualys user
 
-##### <a name="ip"></a>`ip`
+##### <a name="-profile_audit--qualys--ip"></a>`ip`
 
 Data type: `String`
 
 String of the IP address that the qualys user can login from
 
-##### <a name="ssh_authorized_key"></a>`ssh_authorized_key`
+##### <a name="-profile_audit--qualys--ssh_authorized_key"></a>`ssh_authorized_key`
 
-Data type: `Optional[ String ]`
+Data type: `Optional[String]`
 
 String of the public ssh authorized key that the qualys user uses for authentication
 
-##### <a name="ssh_authorized_key_type"></a>`ssh_authorized_key_type`
+##### <a name="-profile_audit--qualys--ssh_authorized_key_type"></a>`ssh_authorized_key_type`
 
 Data type: `String`
 
 String of the key type used for the qualys user's authentication
 
-##### <a name="sshd_custom_cfg"></a>`sshd_custom_cfg`
+##### <a name="-profile_audit--qualys--sshd_custom_cfg"></a>`sshd_custom_cfg`
 
 Data type: `Hash`
 
 Hash of additional sshd match parameters for matchblock for qualys access
 
-##### <a name="subgid_file"></a>`subgid_file`
+##### <a name="-profile_audit--qualys--subgid_file"></a>`subgid_file`
 
 Data type: `String`
 
 Path to subgid file if supported by OS
 
-##### <a name="subuid_file"></a>`subuid_file`
+##### <a name="-profile_audit--qualys--subuid_file"></a>`subuid_file`
 
 Data type: `String`
 
 Path to subuid file if supported by OS
 
-##### <a name="uid"></a>`uid`
+##### <a name="-profile_audit--qualys--uid"></a>`uid`
 
 Data type: `String`
 
 String of the UID of the local qualys user
 
-##### <a name="user"></a>`user`
+##### <a name="-profile_audit--qualys--user"></a>`user`
 
 Data type: `String`
 
 String of the username of the local qualys user
 
-##### <a name="user_comment"></a>`user_comment`
+##### <a name="-profile_audit--qualys--user_comment"></a>`user_comment`
 
 Data type: `String`
 
 String of the comment in passwd file of the local qualys user
 
-### <a name="profile_auditqualys_eus_reporting"></a>`profile_audit::qualys_eus_reporting`
+### <a name="profile_audit--qualys_eus_reporting"></a>`profile_audit::qualys_eus_reporting`
 
-Add wrapper for subscription-manager to lie about enabled repos (requires that qualys can sudo to root)
-See SVC-12072 for details
+Remove old, historical wrapper for subscription-manager to lie about enabled repos.
+This only cleans up old files that are no longer needed.
+See SVCPLAN-5381 & SVC-12072 for historical details.
+Once all NCSA hosts have removed these files this class can go away.
 
 #### Examples
 
@@ -227,26 +231,7 @@ See SVC-12072 for details
 include profile_audit::qualys_eus_reporting
 ```
 
-#### Parameters
-
-The following parameters are available in the `profile_audit::qualys_eus_reporting` class:
-
-* [`enabled`](#enabled)
-* [`repos`](#repos)
-
-##### <a name="enabled"></a>`enabled`
-
-Data type: `Boolean`
-
-Boolean to enable/disable wrapper for subscription-manager
-
-##### <a name="repos"></a>`repos`
-
-Data type: `Array[Hash]`
-
-Array of hashes containing repos to add to the qualys_eus_reporting.sh script
-
-### <a name="profile_auditroot_equivalence"></a>`profile_audit::root_equivalence`
+### <a name="profile_audit--root_equivalence"></a>`profile_audit::root_equivalence`
 
 See https://wiki.ncsa.illinois.edu/display/SecOps/k5login+root+equivalence+reporting
 
@@ -262,18 +247,18 @@ include profile_audit::root_equivalence
 
 The following parameters are available in the `profile_audit::root_equivalence` class:
 
-* [`crons`](#crons)
-* [`enable_yum_repo`](#enable_yum_repo)
-* [`files`](#files)
-* [`packages`](#packages)
+* [`crons`](#-profile_audit--root_equivalence--crons)
+* [`enable_yum_repo`](#-profile_audit--root_equivalence--enable_yum_repo)
+* [`files`](#-profile_audit--root_equivalence--files)
+* [`packages`](#-profile_audit--root_equivalence--packages)
 
-##### <a name="crons"></a>`crons`
+##### <a name="-profile_audit--root_equivalence--crons"></a>`crons`
 
 Data type: `Hash`
 
 Hash of CRON entries for root equivalence reporting
 
-##### <a name="enable_yum_repo"></a>`enable_yum_repo`
+##### <a name="-profile_audit--root_equivalence--enable_yum_repo"></a>`enable_yum_repo`
 
 Data type: `Optional[String]`
 
@@ -282,19 +267,19 @@ This is needed to support enabling the rhel-7-server-optional-rpms repo for RHEL
 
 Default value: `''`
 
-##### <a name="files"></a>`files`
+##### <a name="-profile_audit--root_equivalence--files"></a>`files`
 
 Data type: `Hash`
 
 Hash of files (scripts, etc) used for root equivalence reporting
 
-##### <a name="packages"></a>`packages`
+##### <a name="-profile_audit--root_equivalence--packages"></a>`packages`
 
 Data type: `Array`
 
 Array of packages that need to be installed for root equivalence reporting
 
-### <a name="profile_auditvetting"></a>`profile_audit::vetting`
+### <a name="profile_audit--vetting"></a>`profile_audit::vetting`
 
 See https://wiki.ncsa.illinois.edu/display/SecOps/System+Vetting+Procedures
 This has not yet been implemented

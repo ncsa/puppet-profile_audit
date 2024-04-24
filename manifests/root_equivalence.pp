@@ -24,7 +24,6 @@ class profile_audit::root_equivalence (
   Array $packages,
   Optional[String] $enable_yum_repo = '',
 ) {
-
   # IF SET $enable_yum_repo THEN ENSURE THAT REPO IS ENABLED
   if ( ! empty($enable_yum_repo) ) {
     $exec_name="yum-enable-${enable_yum_repo}"
@@ -60,10 +59,9 @@ class profile_audit::root_equivalence (
     user        => 'root',
     hour        => 8,
     minute      => 1,
-    environment => ['SHELL=/bin/sh', ],
+    environment => ['SHELL=/bin/sh',],
   }
   $crons.each | $k, $v | {
     cron { $k: * => $v }
   }
-
 }
