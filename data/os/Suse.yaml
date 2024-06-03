@@ -1,0 +1,8 @@
+---
+profile_audit::root_equivalence::packages:
+  - "perl"
+  - "perl-File-HomeDir"
+  - "perl-Unix-Syslog"
+
+profile_audit::qualys::subgid_file: "/etc/subgid"
+profile_audit::qualys::subuid_file: "/etc/subuid"
