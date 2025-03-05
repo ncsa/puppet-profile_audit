@@ -100,10 +100,32 @@ open CMD, '-|', "$ps_command" or die "Cannot run ps";
 while ( defined(my $line=<CMD>)) {
         chomp $line;
 
-        if ($test) {
-                print "$line \n";
+        my @ps_line_split = split(/\s+/, $line);
+        my $pid_tainted = $ps_line_split[1];
+        my $pid = '';
+        my $pwd = '';
+
+        # Error check and untaint pid variable
+        if ($pid_tainted =~ m/^(\d+)$/) {
+                $pid = $1;
+                $pwd = `readlink -f /proc/$pid/cwd`;
+
+                if ($? != 0 ) {
+                        $pwd = "ERROR-CANNOT-LOOKUP-PWD"
+                }
+
+                chomp $pwd;
+
         } else {
-                syslog('LOG_INFO', $line);
+                $pwd = "ERROR-NON-NUMERIC-PID-DETECTED"
+        }
+
+        my $output = "$line PWD=$pwd\n";
+
+        if ($test) {
+                print "$output";
+        } else {
+                syslog('LOG_INFO', "$output");
         }
 }
 close CMD;
