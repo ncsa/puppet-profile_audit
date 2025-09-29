@@ -13,7 +13,6 @@ profile_audit::qualys::escalated_scan_sudocfg: |
   Defaults:qualys !requiretty
   %qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
   qualys ALL=(ALL) NOPASSWD: NOMAIL: ALL
-profile_audit::qualys::gid: "19999"
 profile_audit::qualys::group: "qualys"
 profile_audit::qualys::homedir: "/home/qualys"
 profile_audit::qualys::ip: "141.142.148.48/29"
@@ -28,7 +27,7 @@ profile_audit::qualys::sshd_custom_cfg:
   X11Forwarding: "no"
 profile_audit::qualys::subgid_file: ""
 profile_audit::qualys::subuid_file: ""
-profile_audit::qualys::uid: "19999"
+profile_audit::qualys::uid: "1125"
 profile_audit::qualys::user: "qualys"
 profile_audit::qualys::user_comment: "NCSA IRST Qualys - security@ncsa.illinois.edu"
 

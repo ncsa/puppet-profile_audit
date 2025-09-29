@@ -11,9 +11,6 @@
 # @param escalated_scan_sudocfg
 #   String setting qualys sudo config
 #
-# @param gid
-#   String of the GID of the local qualys user
-#
 # @param group
 #   String of the group name of the local qualys user
 #
@@ -51,21 +48,20 @@
 #   include profile_audit::qualys
 #
 class profile_audit::qualys (
-  Boolean            $enabled,
-  Boolean            $escalated_scans,
-  String             $escalated_scan_sudocfg,
-  String             $gid,
-  String             $group,
-  String             $homedir,
-  String             $ip,
+  Boolean          $enabled,
+  Boolean          $escalated_scans,
+  String           $escalated_scan_sudocfg,
+  String           $group,
+  String           $homedir,
+  String           $ip,
   Optional[String] $ssh_authorized_key,
-  String             $ssh_authorized_key_type,
-  Hash               $sshd_custom_cfg,
-  String             $subgid_file,
-  String             $subuid_file,
-  String             $uid,
-  String             $user,
-  String             $user_comment,
+  String           $ssh_authorized_key_type,
+  Hash             $sshd_custom_cfg,
+  String           $subgid_file,
+  String           $subuid_file,
+  String           $uid,
+  String           $user,
+  String           $user_comment,
 ) {
   # ONLY SETUP If enabled AND A ssh_authorized_key IS PROVIDED FOR QUALYS USER
   if ( $enabled and ! $ssh_authorized_key ) {
@@ -78,17 +74,26 @@ class profile_audit::qualys (
     }
   }
   elsif ( $enabled and $ssh_authorized_key ) {
+    # we are moving away from GID 19999 for the qualys group, so correct that
+    exec { 'groupdel if gid 19999':
+      command => "groupdel -f ${group}",
+      onlyif  => "getent group -s compat ${group} | grep -q ':19999'",
+      path    => ['/usr/bin', '/usr/sbin', '/sbin'],
+      before  => Group[$group],
+    }
+
+    # create qualys as a system group (let the OS pick the GID)
     group { $group:
       ensure => 'present',
       name   => $group,
-      gid    => $gid,
+      system => true,
     }
 
     user { $user:
       ensure         => 'present',
       name           => $user,
       comment        => $user_comment,
-      gid            => $gid,
+      gid            => $group,
       home           => $homedir,
       managehome     => true,
       password       => '!!',
@@ -138,6 +143,24 @@ class profile_audit::qualys (
       key     => $ssh_authorized_key,
       type    => $ssh_authorized_key_type,
       require => File[$homedir],
+    }
+
+    # if the qualys UID or qualys GID changes, we need to chown
+    exec { 'chown_if_id_change':
+      command     => "chown -R ${user}:${group} ${homedir}",
+      refreshonly => true,
+      path        => ['/usr/bin', '/usr/sbin', '/sbin'],
+      timeout     => 300,
+      subscribe   => [
+        User[$user],
+        Group[$group],
+      ],
+      require     => [
+        Group[$group],
+        User[$user],
+        File[$homedir],
+        Ssh_authorized_key[$user],
+      ],
     }
 
     ::sshd::allow_from { 'sshd allow qualys from qualys appliance':

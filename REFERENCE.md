@@ -113,7 +113,6 @@ The following parameters are available in the `profile_audit::qualys` class:
 * [`enabled`](#-profile_audit--qualys--enabled)
 * [`escalated_scans`](#-profile_audit--qualys--escalated_scans)
 * [`escalated_scan_sudocfg`](#-profile_audit--qualys--escalated_scan_sudocfg)
-* [`gid`](#-profile_audit--qualys--gid)
 * [`group`](#-profile_audit--qualys--group)
 * [`homedir`](#-profile_audit--qualys--homedir)
 * [`ip`](#-profile_audit--qualys--ip)
@@ -143,12 +142,6 @@ Boolean to define if qualys should be allowed to sudo to root for escalated scan
 Data type: `String`
 
 String setting qualys sudo config
-
-##### <a name="-profile_audit--qualys--gid"></a>`gid`
-
-Data type: `String`
-
-String of the GID of the local qualys user
 
 ##### <a name="-profile_audit--qualys--group"></a>`group`
 
