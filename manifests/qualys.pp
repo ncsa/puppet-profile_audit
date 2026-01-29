@@ -131,10 +131,11 @@ class profile_audit::qualys (
 
     file {
       $homedir:
-        ensure => 'directory',
-        mode   => '0700',
-        owner  => $user,
-        group  => $group,
+        ensure  => 'directory',
+        mode    => '0600',
+        owner   => $user,
+        group   => $group,
+        recurse => true,
         ;
     }
 
@@ -143,24 +144,6 @@ class profile_audit::qualys (
       key     => $ssh_authorized_key,
       type    => $ssh_authorized_key_type,
       require => File[$homedir],
-    }
-
-    # if the qualys UID or qualys GID changes, we need to chown
-    exec { 'chown_if_id_change':
-      command     => "chown -R ${user}:${group} ${homedir}",
-      refreshonly => true,
-      path        => ['/usr/bin', '/usr/sbin', '/sbin'],
-      timeout     => 300,
-      subscribe   => [
-        User[$user],
-        Group[$group],
-      ],
-      require     => [
-        Group[$group],
-        User[$user],
-        File[$homedir],
-        Ssh_authorized_key[$user],
-      ],
     }
 
     ::sshd::allow_from { 'sshd allow qualys from qualys appliance':
