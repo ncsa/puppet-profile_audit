@@ -17,13 +17,13 @@
 # @param ss_arg
 #   String to pass to net_process_log.pl script as --ssarg argument.
 #   Setting to empty string will use default defined in net_process_log.pl
-#   
+#
 # @param ss_filter
 #   String to pass to net_process_log.pl script as --ssfilter argument.
 #   Setting to empty string will use default defined in net_process_log.pl
 #
 # @param minute_interval
-#   Value to use in the minute field of the cron task 
+#   Value to use in the minute field of the cron task
 #
 # @example
 #   include profile_audit::net_process_log
@@ -41,13 +41,13 @@ class profile_audit::net_process_log (
     $ensure_parm = 'absent'
   }
 
-  file { '/root/cron_scripts/net_process_log.pl':
+  file { "${profile_audit::root_cron_scripts_dir}/net_process_log.pl":
     ensure  => $ensure_parm,
     mode    => '0750',
     owner   => 'root',
     group   => 'root',
     source  => "puppet:///modules/${module_name}/net_process_log.pl",
-    require => File['/root/cron_scripts'],
+    require => File[ "${profile_audit::root_cron_scripts_dir}" ],
   }
 
   # Setup any non-default options, otherwise *_option stays blank
@@ -85,6 +85,6 @@ class profile_audit::net_process_log (
     weekday     => '*',
     monthday    => '*',
     environment => ['SHELL=/bin/sh',],
-    command     => "/root/cron_scripts/net_process_log.pl ${ignore_users_option} ${ps_arg_option} ${ss_arg_option} ${ss_filter_option} >/dev/null 2>&1",
+    command     => "${profile_audit::root_cron_scripts_dir}/net_process_log.pl ${ignore_users_option} ${ps_arg_option} ${ss_arg_option} ${ss_filter_option} >/dev/null 2>&1",
   }
 }

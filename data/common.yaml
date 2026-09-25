@@ -1,4 +1,6 @@
 ---
+profile_audit::root_cron_scripts_dir: "/root/cron_scripts"
+
 profile_audit::net_process_log::enable_net_process_log: false
 profile_audit::net_process_log::ignore_users: ""
 profile_audit::net_process_log::minute_interval: "*/10"
