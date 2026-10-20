@@ -1,0 +1,4 @@
+# Log module insertion and removal
+
+-a always,exit -F arch=b64 -S init_module -S finit_module -k kmod_load
+-a always,exit -F arch=b64 -S delete_module -k kmod_unload
