@@ -47,7 +47,7 @@ class profile_audit::net_process_log (
     owner   => 'root',
     group   => 'root',
     source  => "puppet:///modules/${module_name}/net_process_log.pl",
-    require => File[ "${profile_audit::root_cron_scripts_dir}" ],
+    require => File[$profile_audit::root_cron_scripts_dir],
   }
 
   # Setup any non-default options, otherwise *_option stays blank
@@ -85,6 +85,13 @@ class profile_audit::net_process_log (
     weekday     => '*',
     monthday    => '*',
     environment => ['SHELL=/bin/sh',],
-    command     => "${profile_audit::root_cron_scripts_dir}/net_process_log.pl ${ignore_users_option} ${ps_arg_option} ${ss_arg_option} ${ss_filter_option} >/dev/null 2>&1",
+    command     => join([
+        "${profile_audit::root_cron_scripts_dir}/net_process_log.pl",
+        $ignore_users_option,
+        $ps_arg_option,
+        $ss_arg_option,
+        $ss_filter_option,
+        '>/dev/null 2>&1',
+    ], ' '),
   }
 }

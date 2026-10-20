@@ -10,7 +10,7 @@ class profile_audit::qualys_eus_reporting {
 
   # Remove profile alias
   file { '/etc/profile.d/qualys_eus_reporting.sh':
-    ensure  => $alias_ensure_parm,
+    ensure => $alias_ensure_parm,
     #mode    => '0644',
     #owner   => 'root',
     #group   => 'root',
@@ -19,7 +19,7 @@ class profile_audit::qualys_eus_reporting {
 
   # Remove script that the alias will call
   file { '/root/scripts/qualys_eus_reporting.sh':
-    ensure  => $alias_ensure_parm,
+    ensure => $alias_ensure_parm,
     #mode    => '0750',
     #owner   => 'root',
     #group   => 'root',

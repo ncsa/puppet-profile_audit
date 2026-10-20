@@ -26,6 +26,7 @@ This profile installs and configures security auditing functionality used by NCS
 * access for qualys user
 * custom root equivalence reporting script
 * (Optional) Logging of user processes and open network connections to syslog
+* (Optional) Logging of kernel module load/unload events to syslog
 
 ### Beginning with profile_audit
 

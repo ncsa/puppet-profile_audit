@@ -7,6 +7,7 @@
 ### Classes
 
 * [`profile_audit`](#profile_audit): A short summary of the purpose of this class
+* [`profile_audit::auditd_kmod`](#profile_audit--auditd_kmod): Configure auditd to log kernel module operations, and install a plugin script to send these logged events to syslog
 * [`profile_audit::net_process_log`](#profile_audit--net_process_log): Logs user processes and open network connections to syslog
 * [`profile_audit::qualys`](#profile_audit--qualys): Configure host to be scanned by qualys
 * [`profile_audit::qualys_eus_reporting`](#profile_audit--qualys_eus_reporting): Remove old, historical wrapper for subscription-manager to lie about enabled repos.
@@ -29,6 +30,42 @@ A description of what this class does
 ```puppet
 include profile_audit
 ```
+
+#### Parameters
+
+The following parameters are available in the `profile_audit` class:
+
+* [`root_cron_scripts_dir`](#-profile_audit--root_cron_scripts_dir)
+
+##### <a name="-profile_audit--root_cron_scripts_dir"></a>`root_cron_scripts_dir`
+
+Data type: `String`
+
+Directory where root cron scripts exist
+
+### <a name="profile_audit--auditd_kmod"></a>`profile_audit::auditd_kmod`
+
+Configure auditd to log kernel module operations, and install a plugin script to send these logged events to syslog
+
+#### Examples
+
+##### 
+
+```puppet
+include profile_audit::auditd_kmod
+```
+
+#### Parameters
+
+The following parameters are available in the `profile_audit::auditd_kmod` class:
+
+* [`enabled`](#-profile_audit--auditd_kmod--enabled)
+
+##### <a name="-profile_audit--auditd_kmod--enabled"></a>`enabled`
+
+Data type: `Boolean`
+
+Whether to enable auditd kernel module logging
 
 ### <a name="profile_audit--net_process_log"></a>`profile_audit::net_process_log`
 
