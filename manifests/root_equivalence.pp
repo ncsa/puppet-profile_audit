@@ -22,10 +22,10 @@ class profile_audit::root_equivalence (
   Hash $crons,
   Hash $files,
   Array $packages,
-  Optional[String] $enable_yum_repo = '',
+  Optional[String] $enable_yum_repo = undef,
 ) {
   # IF SET $enable_yum_repo THEN ENSURE THAT REPO IS ENABLED
-  if ( ! empty($enable_yum_repo) ) {
+  if $enable_yum_repo =~ String[1] {
     $exec_name="yum-enable-${enable_yum_repo}"
     Package {
       require => [
