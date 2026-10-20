@@ -35,7 +35,8 @@ class profile_audit::auditd_kmod (
       notify => Exec['reload-auditd-rules'],
     }
 
-    $seltype = $facts['os']['selinux']['enabled'] ? {
+    $selinux_enabled = $facts.dig('os', 'selinux', 'enabled')
+    $seltype = $selinux_enabled ? {
       true    => 'audisp_exec_t',
       default => undef,
     }
