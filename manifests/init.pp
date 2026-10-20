@@ -15,9 +15,9 @@ class profile_audit (
   include profile_audit::auditd_kmod
   #include ::profile_audit::vetting
 
-  file { $root_cron_scripts_dir:
-    ensure => 'directory',
-  }
+  ensure_resource('file', $root_cron_scripts_dir, {
+      ensure => 'directory',
+  })
 
   # Only include qualys_eus_reporting on Redhat systems (not centos)
   case $facts['os']['name'] {
